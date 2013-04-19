@@ -18,4 +18,4 @@ m2 = Measure([
             ])
 
 song = Song([m1,m2], 80, "emopiano")
-song.play()
+song.play(loop = True)

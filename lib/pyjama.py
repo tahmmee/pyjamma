@@ -1,5 +1,6 @@
 import rtmidi
 import time
+import copy
 import threading
 
 midiout = rtmidi.MidiOut(0)
@@ -32,6 +33,8 @@ class Note(threading.Thread):
         # off
         midiout.send_message([self.channel, self.note, 0])
 
+        # reinit
+        threading.Thread.__init__(self)
 
 class Measure(object):
     def __init__(self, notes):
@@ -71,8 +74,13 @@ class Song(object):
         self.bps = 60/float(self.tempo)
 
         # create virtual midi out
-        midiout.open_virtual_port(self.name)
+        #midiout.open_virtual_port(self.name)
+        midiout.open_port(6)
 
-    def play(self):
-        for measure in self.measures:
+    def play(self, loop = False):
+        measures = copy.copy(self.measures)
+        for measure in measures:
             measure.play(self.bps)
+
+        if loop:
+            self.play(loop)
